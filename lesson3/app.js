@@ -76,9 +76,6 @@ const server = http.createServer((req, res) => {
         
     });
 
-    // const headers = req.headers;
-    // req.setEncoding('utf-8');
-
     // How to parse urlencoded data and JSON data from client
     // if (req.route === '/' && req.method === 'GET') {
     //     res.setHeader('content-type', 'text/html');
