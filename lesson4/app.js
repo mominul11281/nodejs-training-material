@@ -41,7 +41,7 @@ const server = http.createServer((req, res) => {
                 if (!err) {
                     let student = JSON.parse(data);
                     console.log("before adding new student", student)
-                    const id = student.length + 1;
+                    const id = student.length ? student[student.length - 1].id + 1 : 1;
                     student.push({
                         id: id,
                         name: req.body.name,
