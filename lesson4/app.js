@@ -28,7 +28,7 @@ const server = http.createServer((req, res) => {
     });
 
     req.on('end', () => {
-        if (req.method !== 'GET') {
+        if (req.method!=='GET' && req.method!== 'DELETE' ) {
             if (header === 'application/x-www-form-urlencoded') {
                 req.body = queryString.parse(body);
             } else {
@@ -109,9 +109,80 @@ const server = http.createServer((req, res) => {
             });
         } else if (urlMatch('/student/edit/:id') && req.method === 'PUT') {
             // DO YOUR CODE HERE
+            fs.readFile(path.join(__dirname, 'data', 'student.json'), (err, data) => {
+                if (!err) {
+                    const students = JSON.parse(data);
+                    let studentFound = false;
+                    const updatedStudents = students.map((student) => {
+                        if (student.id.toString() === req.params.id) {
+                            const updatedStd = {}
+                            updatedStd.name = req.body.name ? req.body.name : student.name;
+                            updatedStd.email = req.body.email ? req.body.email : student.email;
+                            studentFound = true;
+                            return {
+                                id: student.id,
+                                ...updatedStd
+                            }
 
+                        }
+                        return student;
+                    });
+
+                    if (studentFound) {
+                        fs.writeFile(path.join(__dirname, 'data', 'student.json'), JSON.stringify(updatedStudents), (err2) => {
+                            if (!err2) {
+                                res.write(JSON.stringify({ message: "Student is updated" }));
+                                res.end();
+                            } else {
+                                res.write(JSON.stringify({ error: "Can't update the student" }));
+                                res.end();
+                            }
+                        })
+                    } else {
+                        res.write(JSON.stringify({ message: "Data not found" }));
+                        res.end();
+                    }
+                } else {
+                    console.log(err);
+                    res.write(JSON.stringify({ error: "Can't read the database" }));
+                    res.end();
+                }
+            });
+            
         } else if (urlMatch('/student/delete/:id') && req.method === 'DELETE') {
             // DO YOUR CODE HERE
+            fs.readFile(path.join(__dirname, 'data', 'student.json'), (err, data) => {
+                if (!err) {
+                    const students = JSON.parse(data);
+                    let studentFound = false;
+                    const newStudents = students.filter((student) => {
+                        if (student.id.toString() === req.params.id) {
+                            studentFound = true;
+                            return false;
+                        }
+                        return true;
+                    });
+
+                    if (studentFound) {
+                        fs.writeFile(path.join(__dirname, 'data', 'student.json'), JSON.stringify(newStudents), (err2) => {
+                            if (!err2) {
+                                res.write(JSON.stringify({ message: "Student is deleted" }));
+                                res.end();
+                            } else {
+                                res.write(JSON.stringify({ error: "Can't update the student" }));
+                                res.end();
+                            }
+                        })
+                    } else {
+                        res.write(JSON.stringify({ message: "Data not found" }));
+                        res.end();
+                    }
+                } else {
+                    console.log(err);
+                    res.write(JSON.stringify({ error: "Can't read the database" }));
+                    res.end();
+                }
+            });
         }
         else {
             res.write(JSON.stringify({ error: "NOT FOUND" }));

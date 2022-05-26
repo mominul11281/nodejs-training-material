@@ -1,12 +1,1 @@
-[
-    {
-        "id": 1,
-        "name": "Rahat",
-        "email": "rahat@gmail.com"
-    },
-    {
-        "id": 2,
-        "name": "Mominul",
-        "email": "mominul@gmail.com"
-    }
-]
+[{"id":2,"name":"partha","email":"partha@gmail.com"}]
