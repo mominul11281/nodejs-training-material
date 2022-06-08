@@ -5,8 +5,8 @@ const HTTP_STATUS = require('../utils/httpStatus');
 const checkAuth = (req, res, next) => {
     if (req.get('authorization')) {
         // const token = req.headers.authorization.split(' ')[1];
-        const token = req.get('authorization').split(' ')[1];
         try {
+            const token = req.get('authorization').split(' ')[1];
             const decodedData = jwt.verify(token, process.env.JWT_SECRET_KEY);
             req.user = {
                 _id: decodedData._id,
